@@ -1,0 +1,121 @@
+<html>
+	<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>DameChain</title>
+        <link rel="stylesheet" href="style/stylea.css" />
+		<script type="text/javascript" src="script/jquery.js"></script>
+		<script type="text/javascript" src="script/script2.js"></script>
+        <script type="text/javascript" src="script/slide.js"></script>
+	</head>
+    <body>
+	<img id="bg" src="Images/fond.png"/>
+        <div id="slider" class="rules form">
+            <p> <b><u>Concept du jeu :</u> DameChain est un jeu qui se joue simultanément, c'est à dire que les deux joueurs
+					ne jouent pas chacun leur tour, mais prévoient en même temps leurs apparitions ou déplacements. <br>
+					Ainsi les appartions ou le déplacement planifiés par les deux joueurs sont compilés à la fin de chaque tour.</b>
+			</p>
+			<font color="B00000" >
+                <h4>
+                    <p>
+                        <u>Objectif :</u> avoir au moins 21 pions, 
+                        ou éliminer tous les pions adverses.
+                    </p>
+                    <p>Le jeu se déroule en deux phases : apparitions et déplacements</p>
+                </h4>
+            </font>
+
+
+                <h2>Apparitions</h2>
+                <ul>
+                    <li>On peut faire apparaître un pion 
+                        pour chaque <a href="#" onmouseover="show(1); "onmouseout="hide();"><u><font color="blue">pion libre</font></u></a> sur le jeu. 
+                        (Un pion est libre s'il ne touche aucun pion 
+                        adverse et si au moins une case autour de lui 
+                        est vide).
+                    </li>
+                    <li>On peut faire apparaître 
+                        jusqu'à 3 pions, à placer
+                        n'importe où sur le plateau.
+                    </li>
+                    <li>Si 2 pions apparaissent sur la même case :
+                        <ul>
+                            <li>Si les 2 joueurs ont le 
+                            même nombre de pions (avant les apparitions) 
+                            alors les pions se suppriment.
+                            </li>
+                            <li>Dans le cas contraire le joueur qui a le moins 
+                                de pions est prioritaire : son pion reste sur la case.
+                            </li>
+                        </ul>
+                    </li>
+               
+                <h2>Changement de phases</h2>
+                   
+                    <li>On passe à la phase déplacement 
+                        à chaque fois que l'un des adversaires 
+                        n'a plus de pions libre.
+                    </li>
+                    <li>On revient à la phase apparitions dès 
+                        que les 2 joueurs ont chacun au moins un pion libre.
+                    </li>
+   
+
+                <h2>Déplacements</h2>
+               
+                    <li>En phase déplacement, les 2 joueurs déplacent simultanément leur 
+                        pion dans n'importe quelle direction et d'une 
+                        seule case seulement (diagonales comprises).
+                    </li>
+                    <li>On élimine un pion adverse en se déplacant sur sa case, si notre <a href="#" onmouseover="show(2);"onmouseout="hide();"><u><font color="blue">chaine</font></u></a> est 
+                        supérieure. (une chaine est un 
+                        ensemble de pions se touchant côte à côte, sur des 
+                        cases à proximités, mais pas sur les diagonales). <a href="#" onmouseover="show(3);"onmouseout="hide();"><font color="blue">Exemple 1</font></a>, 
+						<a href="#" onmouseover="show(4);"onmouseout="hide();"><font color="blue">Ex 2</font></a>, <a href="#" onmouseover="show(5);"onmouseout="hide();"><font color="blue">Ex 3</font></a>
+                    </li>
+                    <li>Si le pion n'a pas de chaine il peut se faire 
+                        éliminer par un seul pion.
+                    </li>
+					<li>Lorsque les 2 pions se déplacent sur une même case :
+						<ul>
+							<li> Le pion qui a la plus grande chaine l'emporte.
+							</li>
+							<li> En cas d'égalité, les deux pions sont supprimés.<a href="#" onmouseover="show(6);"onmouseout="hide();"><font color="blue">Exemple 4</font></a>
+							</li>
+						</ul>
+                    </li>
+                </ul>
+
+            <u>Définition :</u>
+            <p>
+                <a href="#" onmouseover="show(1);"onmouseout="hide();"><u><font color="blue">Pion libre</font></u></a> : Un pion est libre s'il ne 
+                touche aucun pion adverse et si au moins une case 
+                autour de lui est vide
+            </p>
+            <p>
+                <a href="#" onmouseover="show(2);"onmouseout="hide();"><u><font color="blue">Une chaine</font></u></a> : une chaine est un ensemble de 
+                pions se touchant côte à côte, sur des cases 
+                à proximité, mais pas sur les diagonales
+            </p><br>
+        </div>
+		<label id="zoneImg" class='dessin'></label>
+    </body> 
+	<script type="text/javascript">
+	$(document).on("mousemove", function(event){
+	var offL = $("#slider").offset().left;
+	var offT = $("#slider").offset().top;
+		$('#zoneImg').css({'left' : event.pageX+25+'px', 'top' : event.pageY/2+70+'px'});
+	});
+        function show(bild){
+		if (bild==1)document.getElementById('zoneImg').innerHTML = '<a><img src="Images/pionlibre.png"</a>';
+		if (bild==2)document.getElementById('zoneImg').innerHTML = '<a><img src="Images/chaine.png"</a>';
+		if (bild==3)document.getElementById('zoneImg').innerHTML = '<a><img src="Images/deplacement1.png"</a>';
+		if (bild==4)document.getElementById('zoneImg').innerHTML = '<a><img src="Images/deplacement2.png"</a>';
+		if (bild==5)document.getElementById('zoneImg').innerHTML = '<a><img src="Images/deplacement3.png"</a>';
+		if (bild==6)document.getElementById('zoneImg').innerHTML = '<a><img src="Images/deplacement4.png"</a>';
+		}
+		function hide(){
+			document.getElementById('zoneImg').innerHTML = '';
+		}
+		
+        </script>
+</html>
