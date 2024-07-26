@@ -98,6 +98,35 @@ function checkFour(start, step) {
   return false;
 }
 
+function makeAppearances(player) {
+    let freePawns = getFreePawns(player);
+    if (freePawns.length > 0) {
+      let index;
+      do {
+        index = getIndexFromUser();
+      } while (isNaN(index) || index < 0 || index > 35 || board[index] !== 0);
+      board[index] = player;
+    }
+  }
+// faire les apparitions
+function getFreePawns(player) {
+  let freePawns = [];
+  for (let i = 0; i < 36; i++) {
+    if (board[i] === player && isFree(i)) {
+      freePawns.push(i);
+    }
+  }
+  return freePawns;
+}
+// voir s'il reste des pions libre
+function checkVictory() {
+  // Vérifier les lignes
+  for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (checkFour(i * 6 + j, 1)) return;
+    }
+  }
+// vérifier la victoire
 function declareWinner(winner) {
   console.log(`Le joueur ${winner} a gagné !`);
   gameEnded = true;
