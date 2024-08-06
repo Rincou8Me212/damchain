@@ -9,8 +9,6 @@ var pics = new preload("Images/black.png", "Images/gray.png",
     "Images/you1.png", "Images/you2.png", "Images/you3.png",
     "Images/me1.png", "Images/me2.png", "Images/me3.png");
 
-var black = -1; // computer is black
-var red = 1; // visitor is red
 var square_dim = 50;
 var piece_toggled = false;
 var my_turn = false;
@@ -29,22 +27,17 @@ var double_click = false;
 var level_game = "level";
 var positionX = 0,
     positionY = 0; // Je crée une position pour savoir quelle bouton j'ai appuyé
+var newboard;
 
-function Position(x, y) { // La fonction initialise les instances position déclaré AVANT !!!
-    this.positionX = x;
-    this.positionY = y;
-}
-function position() { // Celle la me permet de récupérer les 2 positions d'un coup
-    p = new Position(positionX, positionY);
-    return p;
-}
-function Board() {
+
+// ----------------------Tableaux chargement page et commencement----------------------
+function createBoard() {
     board = new Array();
     for (var i = 0; i < 6; i++) {
         board[i] = new Array();
 		
         for (var j = 0; j < 6; j++)
-            board[i][j] = Board.arguments[6 * j + i];
+            board[i][j] = createBoard.arguments[6 * j + i];
     }
     board[-2] = new Array(); // prevents errors
     board[-1] = new Array(); // prevents errors
@@ -52,7 +45,7 @@ function Board() {
     board[7] = new Array(); // prevents errors
 }
 var board;
-Board(	0, 0, 0, 0, 0, 0,
+createBoard(	0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0,
@@ -61,6 +54,86 @@ Board(	0, 0, 0, 0, 0, 0,
 const debut = getRandombegin();
 board[debut.var1][debut.var2]=1;
 board[(5-debut.var1)][(5-debut.var2)]=-1;
+
+function boardpiece() {
+    newboard = new Array();
+    for (var i = 0; i < 3; i++) {
+        newboard[i] = boardpiece.arguments[i];
+    }
+}
+boardpiece(0, 0, 0);
+newpiece();
+
+function PageLoad(){
+	
+	
+	
+	
+document.write("<h1 id='title'>DameChain</h1>");
+document.write("<form class='ready' name='disp2'><input class='left' type=button id='button_click' value=' Prêt ' onClick='click_round()'><input class='middle' type=button id='button_click' value='Annuler' onClick='click_cancel()'><input type=button class='right' id='slide' value='Règles'></form><aside class='piece_to_add'>");
+
+if (ini == 0) {
+    for (var i = 0; i < 3; i++) {
+        document.write("<a class='piece_add' href='javascript:clicked2(" + i + ")'>");
+        document.write("<img src='");
+        if (newboard[i] == 1) document.write("Images/you1.png");    
+        else document.write("Images/gray.png");
+        document.write("' width=" + square_dim + " height=" + square_dim + " name='space2" + i + "" + i + "' border=0></a>");
+        ini = 1;
+        }
+		document.write("</aside>");
+	document.write("<aside class='comp_right'>");
+	for (var i = 0; i < 3; i++) {
+        document.write("<a class='center2' href='javascript:new_round()'>");
+        document.write("<img src='");
+        if (i < appear_comp())document.write("Images/me1.png");
+		else document.write("Images/gray.png");
+        document.write("' width=" + square_dim + " height=" + square_dim +" name='space3" + i + "" + i +"' border=0></a>");
+	}	
+}
+document.write("</aside>");
+document.write("<table border=0 cellspacing=0 cellpadding=0 width=" + (square_dim * 6 + 8) + "'><tr><td><img src='Images/black.png' width=" + (square_dim * 6 + 8) + " height=4></td></tr>");
+for (var j = 0; j < 6; j++) {
+    document.write("<tr><td><img src='Images/black.png' width=4 height=" + square_dim + ">");
+    for (var i = 0; i < 6; i++) {
+        //if (moveable_space(i,j))
+        document.write("<a href='javascript:clicked(" + i + "," + j + ")'>");
+        document.write("<img src='");
+		if (moveable_space(i, j)){
+			if (board[i][j] == 1)document.write("Images/you1.png");
+			else if (board[i][j] == -1) document.write("Images/me1.png");
+			else document.write("Images/gray.png");
+		} else {
+			if (board[i][j] == 1)document.write("Images/you3.png");
+			else if (board[i][j] == -1) document.write("Images/me3.png");
+			else document.write("Images/black.png");
+		}
+        /*if (board[i][j] == 1) document.write("Images/you1.png");
+        else if (board[i][j] == -1) document.write("Images/me1.png");
+        else if (moveable_space(i, j)) document.write("Images/gray.png");
+        else document.write("Images/black.png");*/
+        document.write("' width=" + square_dim + " height=" + square_dim + " name='space" + i + "" + j + "' border=0>");
+        if (moveable_space(i, j)) document.write("</a>");
+
+    }
+    document.write("<img src='Images/black.png' width=4 height=" + square_dim + "></td></tr>");
+}
+document.write("<tr><td><img src='Images/black.png' width=" + (square_dim * 6 + 8) + " height=4></td></tr></table>");
+
+document.write("<form class='info' name='disp'><textarea name='message' wrap=virtual rows=3 cols=40></textarea><input type=button id='button_click' value=\"Red&eacute;marrer le jeu\" onClick=\"location.href+=''\"></form>");
+document.write("<form class='pions' name='disp4'><img src= 'Images/you1.png' height=" + square_dim + "><img src= 'Images/gray.png' height=" + square_dim + "><div id='Num'>"+count(1)+"</div><img class='right2' src= 'Images/me1.png' height=" + square_dim + "><img class='right22' src= 'Images/gray.png' height=" + square_dim + "><div id='Numc'>"+count(-1)+"</div></form>");
+
+
+document.write("<FORM><SELECT id='niveau'>"+
+      "<OPTION VALUE='debutant' select='selected'> Mode Debutant </OPTION>"+
+      "<OPTION VALUE='amateur'> Mode Amateur </OPTION>"+
+	  "<OPTION VALUE='Multijoueur'> Mode Multijoueur </OPTION>"+
+    "</SELECT></FORM>");
+
+
+}
+PageLoad();
+message("Sélectionne une pièce à faire apparaitre (à gauche du plateau), puis clique sur une case du plateau.");
 
 function boardmidle() {
     board_me = new Array();
@@ -89,67 +162,129 @@ boardmidle(	0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0);	
-			
-function message(str) {
-    if (!game_is_over)
-        document.disp.message.value = str;
+		
+
+//fonctions représentations
+function Coord(x, y) {
+    this.x = x;
+    this.y = y;
+}
+function coord(x, y) {
+    c = new Coord(x, y);
+    return c;
 }
 
-function free(x, y) {
-    if ((board[x - 1][y - 1] != -1) && (board[x - 1][y] != -1) && (board[x - 1][y + 1] != -1) && (board[x][y - 1] != -1) && (board[x][y + 1] != -1) && (board[x + 1][y - 1] != -1) && (board[x + 1][y] != -1) && (board[x + 1][y + 1] != -1)) {
-        if ((board[x - 1][y - 1] == 0) || (board[x - 1][y] == 0) || (board[x - 1][y + 1] == 0) || (board[x][y - 1] == 0) || (board[x][y + 1] == 0) || (board[x + 1][y - 1] == 0) || (board[x + 1][y] == 0) || (board[x + 1][y + 1] == 0)) {
-            return true;
-        }
-    } else {
-        return false;
-    }
+function draw(x, y, w) {
+	if (w==1){
+		if (moveable_space(x,y)){
+			document.images["space" + x + "" + y].src ="Images/you1.png";
+		} else {
+			document.images["space" + x + "" + y].src ="Images/you3.png";
+		}
+	} else if (w==-1){
+		if (moveable_space(x,y)){
+			document.images["space" + x + "" + y].src ="Images/me1.png";
+		} else {
+			document.images["space" + x + "" + y].src ="Images/me3.png";
+		}
+
+	} else if (w==2){
+		document.images["space" + x + "" + y].src ="Images/you2.png";
+	} else if (w==-2){
+		document.images["space" + x + "" + y].src ="Images/me2.png";
+	}
+	//document.images["space" + x + "" + y].src = name;
 }
-function free_comp(x, y) {
-    if ((board[x - 1][y - 1] != 1) && (board[x - 1][y] != 1) && (board[x - 1][y + 1] != 1) && (board[x][y - 1] != 1) && (board[x][y + 1] != 1) && (board[x + 1][y - 1] != 1) && (board[x + 1][y] != 1) && (board[x + 1][y + 1] != 1)) {
-        if ((board[x - 1][y - 1] == 0) || (board[x - 1][y] == 0) || (board[x - 1][y + 1] == 0) || (board[x][y - 1] == 0) || (board[x][y + 1] == 0) || (board[x + 1][y - 1] == 0) || (board[x + 1][y] == 0) || (board[x + 1][y + 1] == 0)) {
-            return true;
-        }
-    } else {
-        return false;
-    }
+function draw2(x, y, name) {
+    document.images["space2" + x + "" + x].src = name;
+}
+function draw3(x,y){
+	if (moveable_space(x,y)){
+		document.images["space" + x + "" + y].src ="Images/gray.png";
+	} else {
+		document.images["space" + x + "" + y].src ="Images/black.png";
+	}
+}
+function draw4(x, y, name) {
+    document.images["space3" + x + "" + x].src = name;
 }
 
-function appear() {
-    if ((all_piece_appear) || (!next_round)) {
-        var n = 0;
-        for (var i = 0; i < 6; i++)
-            for (var j = 0; j < 6; j++)
-                if ((board[i][j] == 1) && (free(i, j))) {
-                    if ((n < 3) && (n < (36 - count(1) - count(-1)))){
-							n = n + 1;
-                    } else n
-                }
-        return n;
-    }
-}
 
-function appear_comp() {
-    var n = 0;
-    for (var i = 0; i < 6; i++)
-        for (var j = 0; j < 6; j++)
-            if ((board[i][j] == -1) && (free_comp(i, j))) {
-                if ((n < 3) && (n < (36 - count(1) - count(-1)))) {
-                    n = n + 1;
-                } else n
-            }
-    return n;
-}
-function count(p){
-	var c = 0;
-	for (var i = 0; i < 6; i++){
-        for (var j = 0; j < 6; j++){
-            if (board[i][j] == p){
-				c = c +1;
+
+//------------------------------  fonctions à chaque tour 
+function click_round() { // fonction après click pour chaque tour
+
+	if (!(game_over()) && !(draw_game())){
+			if (game_cycle()){	
+				if (all_piece_appear()) {
+					next_round = false;
+					recupert();
+					if (!ap){
+						ap=true;
+						setTimeout("ap=false;",1000);
+						for (var i = 0; i < 3; i++) {
+							draw4(i,i,"Images/gray.png");
+						}
+						computer_appear();
+					} else {
+						setTimeout("next_round = true;new_round();", 900);
+						message("Attention double clique. Attends une seconde.");
+					}
+				} else if ((!all_piece_appear()) && (ini > 0)) {
+						message("Apparitions non terminé");
+				}
+			} else if (!game_cycle()){
+				if (speed==true && moved==true){ // à cause de setTimeout si l'utilisateur est trop rapide
+					message("Pas trop vite ! reclique sur prêt.");
+				} else {
+					speed=true;
+					if (moved==true){
+						computer_move();
+					} else if (moved==false){
+						message("Déplacement non terminé");
+					}
+				}
 			}
+	} else {
+		if (game_over()){
+			show_number();
+		} else if (draw_game()){
+			setTimeout("message('Match nul!  Allez on rejoue !');", 3500);
 		}
 	}
-	return c;
 }
+function new_round() {
+	speedy=false;
+	double_click=false;
+	the_chain();
+	show_number();
+    if (!(game_over()) && !(draw_game())){
+	if ((next_round) && (ini > 1)) {
+        newpiece();
+		if (game_cycle()){
+			message("Phase Apparition.");
+			for (var i = 0; i < 3; i++) {
+				if (i < appear_comp()) draw4(i,i,"Images/me1.png");
+			}
+		} else if (!game_cycle()){
+			if (mes == 0) message("Phase Déplacement : clique un de tes pions sur le plateau et clique sur une case pour le déplacer.");
+			else  message("Phase Déplacement.");
+		}
+        for (var i = 0; i < 3; i++)
+            if (newboard[i] == 1) draw2(i,i,"Images/you1.png");
+    } 
+	}
+}
+function game_cycle() {
+	if ((appear() == 0) || (appear_comp() == 0)  || (moved)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+//chaines
 var nb=1;
 function chain(i,j,p,think){
 	board_chain[i][j]=p*8;
@@ -204,21 +339,63 @@ function chain_piece(i,j,p,think){
 	return  z;
 }
 
-function game_cycle() {
-	if ((appear() == 0) || (appear_comp() == 0)  || (moved)) {
-        return false;
+
+// ------------------  Apparitions
+function free(x, y) {
+    if ((board[x - 1][y - 1] != -1) && (board[x - 1][y] != -1) && (board[x - 1][y + 1] != -1) && (board[x][y - 1] != -1) && (board[x][y + 1] != -1) && (board[x + 1][y - 1] != -1) && (board[x + 1][y] != -1) && (board[x + 1][y + 1] != -1)) {
+        if ((board[x - 1][y - 1] == 0) || (board[x - 1][y] == 0) || (board[x - 1][y + 1] == 0) || (board[x][y - 1] == 0) || (board[x][y + 1] == 0) || (board[x + 1][y - 1] == 0) || (board[x + 1][y] == 0) || (board[x + 1][y + 1] == 0)) {
+            return true;
+        }
     } else {
-        return true;
+        return false;
     }
 }
-function boardpiece() {
-    newboard = new Array();
-    for (var i = 0; i < 3; i++) {
-        newboard[i] = boardpiece.arguments[i];
+function free_comp(x, y) {
+    if ((board[x - 1][y - 1] != 1) && (board[x - 1][y] != 1) && (board[x - 1][y + 1] != 1) && (board[x][y - 1] != 1) && (board[x][y + 1] != 1) && (board[x + 1][y - 1] != 1) && (board[x + 1][y] != 1) && (board[x + 1][y + 1] != 1)) {
+        if ((board[x - 1][y - 1] == 0) || (board[x - 1][y] == 0) || (board[x - 1][y + 1] == 0) || (board[x][y - 1] == 0) || (board[x][y + 1] == 0) || (board[x + 1][y - 1] == 0) || (board[x + 1][y] == 0) || (board[x + 1][y + 1] == 0)) {
+            return true;
+        }
+    } else {
+        return false;
     }
 }
-var newboard;
-boardpiece(0, 0, 0);
+
+function appear() {
+    if ((all_piece_appear) || (!next_round)) {
+        var n = 0;
+        for (var i = 0; i < 6; i++)
+            for (var j = 0; j < 6; j++)
+                if ((board[i][j] == 1) && (free(i, j))) {
+                    if ((n < 3) && (n < (36 - count(1) - count(-1)))){
+							n = n + 1;
+                    } else n
+                }
+        return n;
+    }
+}
+function appear_comp() {
+    var n = 0;
+    for (var i = 0; i < 6; i++)
+        for (var j = 0; j < 6; j++)
+            if ((board[i][j] == -1) && (free_comp(i, j))) {
+                if ((n < 3) && (n < (36 - count(1) - count(-1)))) {
+                    n = n + 1;
+                } else n
+            }
+    return n;
+}
+function count(p){
+	var c = 0;
+	for (var i = 0; i < 6; i++){
+        for (var j = 0; j < 6; j++){
+            if (board[i][j] == p){
+				c = c +1;
+			}
+		}
+	}
+	return c;
+}
+
 function newpiece() { // créer des nouveaux pions
     if (game_cycle()) {
         for (var i = 0; i < appear(); i++) {
@@ -235,248 +412,8 @@ function all_piece_appear() {
     }
 }
 
-function moveable_space(i, j) {
-    // calculates whether it is a gray (moveable)
-    // or black (non-moveable) space
-    return (((i % 2) + j) % 2 == 0);
 
-}
-function Coord(x, y) {
-    this.x = x;
-    this.y = y;
-}
-function coord(x, y) {
-    c = new Coord(x, y);
-    return c;
-}
-document.write("<h1 id='title'>DameChain</h1>");
-document.write("<form class='ready' name='disp2'><input class='left' type=button id='button_click' value=' Prêt ' onClick='click_round()'><input class='middle' type=button id='button_click' value='Annuler' onClick='click_cancel()'><input type=button class='right' id='slide' value='Règles'></form><aside class='piece_to_add'>");
-
-if (ini == 0) {
-    for (var i = 0; i < 3; i++) {
-        document.write("<a class='piece_add' href='javascript:clicked2(" + i + ")'>");
-        document.write("<img src='");
-        if (newboard[i] == 1) document.write("Images/you1.png");    
-        else document.write("Images/gray.png");
-        document.write("' width=" + square_dim + " height=" + square_dim + " name='space2" + i + "" + i + "' border=0></a>");
-        ini = 1;
-        }
-document.write("</aside>");
-	document.write("<aside class='comp_right'>");
-	for (var i = 0; i < 3; i++) {
-        document.write("<a class='center2' href='javascript:new_round()'>");
-        document.write("<img src='");
-        if (i < appear_comp())document.write("Images/me1.png");
-		else document.write("Images/gray.png");
-        document.write("' width=" + square_dim + " height=" + square_dim +" name='space3" + i + "" + i +"' border=0></a>");
-	}	
-}
-document.write("</aside>");
-document.write("<table border=0 cellspacing=0 cellpadding=0 width=" + (square_dim * 6 + 6) + "'><tr><td><img src='Images/black.png' width=" + (square_dim * 6 + 8) + " height=4></td></tr>");
-for (var j = 0; j < 6; j++) {
-    document.write("<tr><td><img src='Images/black.png' width=4 height=" + square_dim + ">");
-    for (var i = 0; i < 6; i++) {
-        //if (moveable_space(i,j))
-        document.write("<a href='javascript:clicked(" + i + "," + j + ")'>");
-        document.write("<img src='");
-		if (moveable_space(i, j)){
-			if (board[i][j] == 1)document.write("Images/you1.png");
-			else if (board[i][j] == -1) document.write("Images/me1.png");
-			else document.write("Images/gray.png");
-		} else {
-			if (board[i][j] == 1)document.write("Images/you3.png");
-			else if (board[i][j] == -1) document.write("Images/me3.png");
-			else document.write("Images/black.png");
-		}
-        /*if (board[i][j] == 1) document.write("Images/you1.png");
-        else if (board[i][j] == -1) document.write("Images/me1.png");
-        else if (moveable_space(i, j)) document.write("Images/gray.png");
-        else document.write("Images/black.png");*/
-        document.write("' width=" + square_dim + " height=" + square_dim + " name='space" + i + "" + j + "' border=0>");
-        if (moveable_space(i, j)) document.write("</a>");
-
-    }
-    document.write("<img src='Images/black.png' width=4 height=" + square_dim + "></td></tr>");
-}
-
-function draw(x, y, w) {
-	if (w==1){
-		if (moveable_space(x,y)){
-			document.images["space" + x + "" + y].src ="Images/you1.png";
-		} else {
-			document.images["space" + x + "" + y].src ="Images/you3.png";
-		}
-	} else if (w==-1){
-		if (moveable_space(x,y)){
-			document.images["space" + x + "" + y].src ="Images/me1.png";
-		} else {
-			document.images["space" + x + "" + y].src ="Images/me3.png";
-		}
-
-	} else if (w==2){
-		document.images["space" + x + "" + y].src ="Images/you2.png";
-	} else if (w==-2){
-		document.images["space" + x + "" + y].src ="Images/me2.png";
-	}
-	//document.images["space" + x + "" + y].src = name;
-}
-document.write("<tr><td><img src='Images/black.png' width=" + (square_dim * 6 + 8) + " height=4></td></tr></table>");
-function draw2(x, y, name) {
-    document.images["space2" + x + "" + x].src = name;
-}
-function draw3(x,y){
-	if (moveable_space(x,y)){
-		document.images["space" + x + "" + y].src ="Images/gray.png";
-	} else {
-		document.images["space" + x + "" + y].src ="Images/black.png";
-	}
-}
-function draw4(x, y, name) {
-    document.images["space3" + x + "" + x].src = name;
-}
-document.write("<form class='info' name='disp'><textarea name='message' wrap=virtual rows=3 cols=40></textarea><input type=button id='button_click' value=\"Red&eacute;marrer le jeu\" onClick=\"location.href+=''\"></form>");
-document.write("<form class='pions' name='disp4'><img src= 'Images/you1.png' height=" + square_dim + "><img src= 'Images/gray.png' height=" + square_dim + "><div id='Num'>"+count(1)+"</div><img class='right2' src= 'Images/me1.png' height=" + square_dim + "><img class='right22' src= 'Images/gray.png' height=" + square_dim + "><div id='Numc'>"+count(-1)+"</div></form>");
-
-
-document.write("<FORM><SELECT id='niveau'>"+
-      "<OPTION VALUE='debutant' select='selected'> Mode Débutant </OPTION>"+
-      "<OPTION VALUE='amateur'> Mode Amateur </OPTION>"+
-    "</SELECT></FORM>");
-
-function recupert(){
-		var mylist = document.getElementById("niveau");
-	if (mylist!== null){	
-		var valeur = mylist.options[mylist.selectedIndex].value;
-		level_game = valeur;
-			if (valeur=="debutant"){
-				mylist.removeChild(mylist.options[1]);
-				mylist.id = "selection";
-				//mylist.length=0;
-			} else if (valeur=="amateur"){
-				mylist.removeChild(mylist.options[0]);
-				mylist.id = "selection";
-			}
-	}	
-}
-
-function click_cancel(){
-	if (game_cycle()){
-		for (var j = 0; j < 6; j++) {
-			for (var i = 0; i < 6; i++) {
-				if (board_me[i][j]==1){
-					board_me[i][j]=0;
-					draw3(i,j);
-					next_round=true;
-					ini = 2;
-					new_round();
-					message("Apparitions annulés, rejoue !");
-				}
-			}
-		}
-	} else if (!game_cycle() && moved==true){
-		if (speed==true){ // à cause de setTimeout si l'utilisateur est trop rapide
-			message("Pas trop vite ! reclique sur Annuler.");
-		} else {
-			speed=true;
-			speedy=false;
-			double_click=false;
-			if (board[apres.x][apres.y]==-1){
-				 draw(avant.x,avant.y,1);
-				 draw(apres.x,apres.y,-1);
-				 board[avant.x][avant.y]=1;
-				 board_me[apres.x][apres.y]= 0;
-				 board_me[avant.x][avant.y]=0;
-			} else if (board[apres.x][apres.y]==0){
-				 draw(avant.x,avant.y,1);
-				 draw3(apres.x,apres.y);
-				 board[avant.x][avant.y]=1;
-				 board_me[apres.x][apres.y]= 0;
-				 board_me[avant.x][avant.y]=0;
-			}
-			message("Déplacement annulé, rejoue !");
-			moved=false;
-			my_turn=true;
-		}
-	}
-}
-function click_round() { // fonction après click pour chaque tour
-
-	if (!(game_over()) && !(draw_game())){
-			if (game_cycle()){	
-				if (all_piece_appear()) {
-					next_round = false;
-					recupert();
-					if (!ap){
-						ap=true;
-						setTimeout("ap=false;",1000);
-						for (var i = 0; i < 3; i++) {
-							draw4(i,i,"Images/gray.png");
-						}
-						computer_appear();
-					} else {
-						setTimeout("next_round = true;new_round();", 900);
-						message("Attention double clique. Attends une seconde.");
-					}
-				} else if ((!all_piece_appear()) && (ini > 0)) {
-						message("Apparitions non terminé");
-				}
-			} else if (!game_cycle()){
-				if (speed==true && moved==true){ // à cause de setTimeout si l'utilisateur est trop rapide
-					message("Pas trop vite ! reclique sur prêt.");
-				} else {
-					speed=true;
-					if (moved==true){
-						computer_move();
-					} else if (moved==false){
-						message("Déplacement non terminé");
-					}
-				}
-			}
-	} else {
-		if (game_over()){
-			show_number();
-		} else if (draw_game()){
-			setTimeout("message('Match nul!  Allez on rejoue !');", 3500);
-		}
-	}
-}
-function show_number(){
-	var chiffre = document.getElementById('Num');
-	var chiffrec = document.getElementById('Numc');
-	
-	if (count(1)==0 || count(-1)>20){
-		chiffre.innerHTML = count(1);
-		chiffrec.innerHTML = "<font color=orange class='shadows'>"+count(-1)+"</font>";
-	} else if (count(-1)==0 || count(1)>20){
-		chiffre.innerHTML = "<font color=orange class='shadows'>"+count(1)+"</font>";
-		chiffrec.innerHTML = count(-1);
-	} else {
-			chiffre.innerHTML = count(1);
-			chiffrec.innerHTML = count(-1);
-	}
-}
-function new_round() {
-	speedy=false;
-	double_click=false;
-	the_chain();
-	show_number();
-    if (!(game_over()) && !(draw_game())){
-	if ((next_round) && (ini > 1)) {
-        newpiece();
-		if (game_cycle()){
-			message("Phase Apparition.");
-			for (var i = 0; i < 3; i++) {
-				if (i < appear_comp()) draw4(i,i,"Images/me1.png");
-			}
-		} else if (!game_cycle()){
-			if (mes == 0) message("Phase Déplacement : clique un de tes pions sur le plateau et clique sur une case pour le déplacer.");
-			else  message("Phase Déplacement.");
-		}
-        for (var i = 0; i < 3; i++)
-            if (newboard[i] == 1) draw2(i,i,"Images/you1.png");
-    } 
-	}
-}
+//-------------------  Déplacements
 function clicked(i, j) {
 	if (ini==1 && piece_toggled==true){
 		message("Maintenant clique sur prêt, comme à chaque fois que ton tour sera terminé.")
@@ -531,7 +468,6 @@ function clicked2(i) {
         } 
     }
 }
-
 function toggle(x, y) {
     if (!(game_cycle())) {
         if (my_turn) {
@@ -581,61 +517,13 @@ function toggle(x, y) {
         }
     }
 }
-function integ(num) {
-    if (num != null)
-        return Math.round(num);
-    else
-        return null;
-}
-function abs(num) {
-    return Math.abs(num);
-}
-function sign(num) {
-    if (num < 0) return -1;
-    else return 1;
-}
-function getRandom() {
-    return 2 * Math.random() - 1;
-}
-function getRandom2(l) {
-    return integ((l-1)* Math.random());
-}
-function getRandombegin(){
-	var c = 0;
-	var c = 0;
-	lll = getRandom2(4);
-	if (lll==0){
-		c = getRandom2(6);
-		cc = 0;
-	} else if (lll==1){
-		c = getRandom2(6);
-		cc = 5;
-	} else if (lll==2){
-		cc = getRandom2(6);
-		c = 0;
-	} else if (lll==3){
-		cc = getRandom2(6);
-		c = 5;
-	}
-	return {var1 : c, var2 : cc};
-}
-function concatenate(arr1,arr2) {
- // function tacks the second array onto the end of the first and returns result
- for(var i=0;i<arr2.length;i++)
-  arr1[arr1.length+i] = arr2[i];
- return arr1;
-}
-function legal_move(from, to) {
-    if ((to.x < 0) || (to.y < 0) || (to.x > 6) || (to.y > 6)) return false;
-    piece = board[from.x][from.y];
-    distance = coord(to.x - from.x, to.y - from.y);
-    if (abs(distance.x) > 1 || abs(distance.y) > 1) {
-        message("Déplacement non autorisé.");
-        return false;
-    }
-    return true;
-}
 
+function moveable_space(i, j) {
+    // calculates whether it is a gray (moveable)
+    // or black (non-moveable) space
+    return (((i % 2) + j) % 2 == 0);
+
+}
 function move(from, to) {
     my_turn = true;
     if (legal_move(from, to)) {
@@ -684,10 +572,6 @@ function remove(x, y) {
         draw2(x, y);
     board[x][y] = 0;
 }
-function Result(val) {
-    this.high = val;
-    this.dir = new Array();
-}
 function move_comp(from, to) {
 	toggle(from.x, from.y);
     comp_move = true;
@@ -697,6 +581,59 @@ function move_comp(from, to) {
   
     return true;
 }
+function legal_move(from, to) {
+    if ((to.x < 0) || (to.y < 0) || (to.x > 6) || (to.y > 6)) return false;
+    piece = board[from.x][from.y];
+    distance = coord(to.x - from.x, to.y - from.y);
+    if (abs(distance.x) > 1 || abs(distance.y) > 1) {
+        message("Déplacement non autorisé.");
+        return false;
+    }
+    return true;
+}
+
+//Maths
+function integ(num) {
+    if (num != null)
+        return Math.round(num);
+    else
+        return null;
+}
+function abs(num) {
+    return Math.abs(num);
+}
+function sign(num) {
+    if (num < 0) return -1;
+    else return 1;
+}
+function getRandom() {
+    return 2 * Math.random() - 1;
+}
+function getRandom2(l) {
+    return integ((l-1)* Math.random());
+}
+function getRandombegin(){
+	var c = 0;
+	var c = 0;
+	lll = getRandom2(4);
+	if (lll==0){
+		c = getRandom2(6);
+		cc = 0;
+	} else if (lll==1){
+		c = getRandom2(6);
+		cc = 5;
+	} else if (lll==2){
+		cc = getRandom2(6);
+		c = 0;
+	} else if (lll==3){
+		cc = getRandom2(6);
+		c = 5;
+	}
+	return {var1 : c, var2 : cc};
+}
+
+
+//--------------------  fin de jeu
 function game_over() { // make sure game is not over (return true if game is over)
     comp = you = false;
 	comp20 = false;
@@ -729,6 +666,100 @@ function draw_game(){// en cas de match nul (pour les apparitions). Il faudra fa
 		show_number();
 		return true;
 	} else {return false;}
+}
+
+
+// autres
+function Position(x, y) { // La fonction initialise les instances position déclaré AVANT !!!
+    this.positionX = x;
+    this.positionY = y;
+}
+function position() { // Celle la me permet de récupérer les 2 positions d'un coup
+    p = new Position(positionX, positionY);
+    return p;
+}
+
+
+// affichages et boutons
+function message(str) { // le message à afficher
+    if (!game_is_over)
+        document.disp.message.value = str;
+}
+function click_cancel(){ // pour le bouton Annuler
+	if (game_cycle()){
+		for (var j = 0; j < 6; j++) {
+			for (var i = 0; i < 6; i++) {
+				if (board_me[i][j]==1){
+					board_me[i][j]=0;
+					draw3(i,j);
+					next_round=true;
+					ini = 2;
+					new_round();
+					message("Apparitions annulés, rejoue !");
+				}
+			}
+		}
+	} else if (!game_cycle() && moved==true){
+		if (speed==true){ // à cause de setTimeout si l'utilisateur est trop rapide
+			message("Pas trop vite ! reclique sur Annuler.");
+		} else {
+			speed=true;
+			speedy=false;
+			double_click=false;
+			if (board[apres.x][apres.y]==-1){
+				 draw(avant.x,avant.y,1);
+				 draw(apres.x,apres.y,-1);
+				 board[avant.x][avant.y]=1;
+				 board_me[apres.x][apres.y]= 0;
+				 board_me[avant.x][avant.y]=0;
+			} else if (board[apres.x][apres.y]==0){
+				 draw(avant.x,avant.y,1);
+				 draw3(apres.x,apres.y);
+				 board[avant.x][avant.y]=1;
+				 board_me[apres.x][apres.y]= 0;
+				 board_me[avant.x][avant.y]=0;
+			}
+			message("Déplacement annulé, rejoue !");
+			moved=false;
+			my_turn=true;
+		}
+	}
+}
+function show_number(){ // pour le comptage des pions
+	var chiffre = document.getElementById('Num');
+	var chiffrec = document.getElementById('Numc');
+	
+	if (count(1)==0 || count(-1)>20){
+		chiffre.innerHTML = count(1);
+		chiffrec.innerHTML = "<font color=orange class='shadows'>"+count(-1)+"</font>";
+	} else if (count(-1)==0 || count(1)>20){
+		chiffre.innerHTML = "<font color=orange class='shadows'>"+count(1)+"</font>";
+		chiffrec.innerHTML = count(-1);
+	} else {
+			chiffre.innerHTML = count(1);
+			chiffrec.innerHTML = count(-1);
+	}
+}
+
+
+
+//--------------------------------------- Partie Adversaire Programme ----------------------------------------------------------------------
+
+
+function recupert(){ // récupert le niveau de jeu contre le programme
+		var mylist = document.getElementById("niveau");
+	if (mylist!== null){	
+		var valeur = mylist.options[mylist.selectedIndex].value;
+		level_game = valeur;
+			if (valeur=="debutant"){
+				mylist.removeChild(mylist.options[1]);
+				mylist.id = "selection";
+				//mylist.length=0;
+			} else if (valeur=="amateur"){
+				mylist.removeChild(mylist.options[0]);
+				mylist.id = "selection";
+			}
+	}	
 }
 
 
@@ -1694,5 +1725,4 @@ function compilation(){
 		speed=true;
 }
 
-message("Sélectionne une pièce à faire apparaitre (à gauche du plateau), puis clique sur une case du plateau.");
 my_turn = true;
